@@ -1,6 +1,6 @@
 import cv2
 from matplotlib import pyplot as plt
-from numpy import zeros, arange, meshgrid, array
+from numpy import zeros, arange, meshgrid, array, logical_or
 from pathlib import Path
 import argparse
 
@@ -50,8 +50,10 @@ def instaImages(src, alpha=0.6):
     if not(mapX3 is None or mapY3 is None or mapX4 is None or mapY4 is None):
         dst1 = cv2.remap(src, mapX3, mapY3, cv2.INTER_LINEAR, cv2.BORDER_CONSTANT)
         dst2 = cv2.remap(src, mapX4, mapY4, cv2.INTER_LINEAR, cv2.BORDER_CONSTANT)
-        dst1[dst1.sum(axis=2) == 0, :] = 255
-        dst2[dst2.sum(axis=2) == 0] = 255
+        dst1[logical_or(logical_or(mapX3 < 0, mapX3 > src.shape[1]), 
+                        logical_or(mapY3 < 0, mapY3 > src.shape[0])), :] = 255
+        dst2[logical_or(logical_or(mapX4 < 0, mapX4 > src.shape[1]), 
+                        logical_or(mapY4 < 0, mapY4 > src.shape[0])), :] = 255
         dsts.append(dst1)
         dsts.append(dst2)
 
