@@ -50,8 +50,8 @@ def instaImages(src, alpha=0.6):
     if not(mapX3 is None or mapY3 is None or mapX4 is None or mapY4 is None):
         dst1 = cv2.remap(src, mapX3, mapY3, cv2.INTER_LINEAR, cv2.BORDER_CONSTANT)
         dst2 = cv2.remap(src, mapX4, mapY4, cv2.INTER_LINEAR, cv2.BORDER_CONSTANT)
-        dst1[dst1 == 0] = 255
-        dst2[dst2 == 0] = 255
+        dst1[dst1.sum(axis=2) == 0, :] = 255
+        dst2[dst2.sum(axis=2) == 0] = 255
         dsts.append(dst1)
         dsts.append(dst2)
 
