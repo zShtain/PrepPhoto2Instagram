@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 from numpy import zeros, arange, meshgrid, array, logical_or
 from pathlib import Path
 import argparse
+import sys
 
 
 def createMaps(srcWidth, srcHeight, dstWidth=2048, dstHeight=2048):
@@ -81,19 +82,28 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--inputImage', default=None, required=True)
     parser.add_argument('--outputPath', default=None, required=False)
-    args = parser.parse_args()
 
-    if args.inputImage is None:
-        raise ValueError('Missing input image')
+    inputImage = ""
+    outPath = ""
+    if len(sys.argv) > 1:
+        args = parser.parse_args()
 
-    imgPath = Path(args.inputImage)
+        if args.inputImage is None:
+            raise ValueError('Missing input image')
+        inputPath = args.inputImage
+        outPath = "./output/" if args.outputPath is None else str(args.outputPath)
+
+    else:
+        inputImage = "./input/test.png"
+        outPath = "./output/"
+
+    imgPath = Path(inputImage)
     img = cv2.imread(str(imgPath))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     imgType = imgPath.suffix
     imgName = imgPath.name.replace(imgType, '')
-    outPath = str(imgPath.parent) if args.outputPath is None else str(args.outputPath)
-
+    
     outImgs = instaImages(img)
     for i in range(len(outImgs)):
         plt.imsave(outPath + '\\' + imgName + '_' + str(i + 1) + imgType, outImgs[i])
